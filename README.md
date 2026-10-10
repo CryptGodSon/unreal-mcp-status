@@ -2,9 +2,21 @@
   <img src="images/icon.png" width="128" height="128" alt="Unreal MCP Status logo">
 </p>
 
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=montemr.unreal-mcp-status"><img src="https://img.shields.io/visual-studio-marketplace/v/montemr.unreal-mcp-status?label=VS%20Code%20Marketplace&logo=visualstudiocode" alt="VS Code Marketplace"></a>
+  <a href="https://open-vsx.org/extension/montemr/unreal-mcp-status"><img src="https://img.shields.io/open-vsx/v/montemr/unreal-mcp-status?label=Open%20VSX" alt="Open VSX"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=montemr.unreal-mcp-status"><img src="https://img.shields.io/visual-studio-marketplace/i/montemr.unreal-mcp-status?label=installs" alt="Installs"></a>
+</p>
+
 # Unreal MCP Status
 
 A small status bar indicator that tells you at a glance whether the **Unreal Editor MCP server** is reachable, so you know when AI assistants and other MCP clients (Claude Code, Copilot, Cursor…) can control the editor.
+
+## Install
+
+- **VS Code:** [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=montemr.unreal-mcp-status), or search for "Unreal MCP Status" in the Extensions view.
+- **Antigravity, Cursor, VSCodium and other VS Code-based editors:** [Open VSX](https://open-vsx.org/extension/montemr/unreal-mcp-status).
+- **From the command line:** `code --install-extension montemr.unreal-mcp-status`
 
 ## States
 
