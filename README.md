@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/icon.png" width="128" height="128" alt="Unreal MCP Status logo">
+</p>
+
 # Unreal MCP Status
 
 A small status bar indicator that tells you at a glance whether the **Unreal Editor MCP server** is reachable, so you know when AI assistants and other MCP clients (Claude Code, Copilot, Cursor…) can control the editor.
