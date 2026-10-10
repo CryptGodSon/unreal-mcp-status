@@ -1,5 +1,5 @@
 {
-  "description": "Shows in the status bar whether the Unreal Editor MCP server is reachable.",
+  "description": "Status bar light for Unreal Engine MCP: see at a glance whether Claude Code, Cursor or Copilot can reach the Unreal Editor. Works with Epic's built-in Unreal MCP plugin (UE 5.8).",
   "command.refresh": "Unreal MCP: Check connection",
   "config.url": "Address of the Unreal Editor MCP server.",
   "config.intervalSeconds": "How often to check the connection, in seconds."

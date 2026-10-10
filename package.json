@@ -2,7 +2,7 @@
 	"name": "unreal-mcp-status",
 	"displayName": "Unreal MCP Status",
 	"description": "%description%",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"publisher": "montemr",
 	"license": "MIT",
 	"icon": "images/icon.png",

@@ -1,5 +1,5 @@
 {
-  "description": "Pokazuje na pasku stanu, czy serwer MCP edytora Unreal jest osiągalny.",
+  "description": "Kontrolka na pasku stanu dla Unreal Engine MCP: od razu widać, czy Claude Code, Cursor albo Copilot mogą połączyć się z edytorem Unreal. Działa z wbudowaną wtyczką Unreal MCP od Epic (UE 5.8).",
   "command.refresh": "Unreal MCP: Sprawdź połączenie",
   "config.url": "Adres serwera MCP edytora Unreal.",
   "config.intervalSeconds": "Jak często sprawdzać połączenie (w sekundach)."
