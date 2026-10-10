@@ -17,9 +17,30 @@
 	"keywords": [
 		"unreal",
 		"unreal engine",
+		"unreal engine 5",
+		"ue5",
+		"unreal editor",
 		"mcp",
 		"model context protocol",
-		"status bar"
+		"mcp server",
+		"ai",
+		"ai assistant",
+		"claude",
+		"claude code",
+		"copilot",
+		"cursor",
+		"status bar",
+		"connection status",
+		"gamedev",
+		"game development",
+		"game design",
+		"game designer",
+		"level design",
+		"graphic design",
+		"graphic designer",
+		"3d",
+		"technical artist",
+		"blueprints"
 	],
 	"engines": {
 		"vscode": "^1.80.0"
