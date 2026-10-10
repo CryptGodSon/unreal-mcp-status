@@ -1,0 +1,6 @@
+{
+  "description": "Shows in the status bar whether the Unreal Editor MCP server is reachable.",
+  "command.refresh": "Unreal MCP: Check connection",
+  "config.url": "Address of the Unreal Editor MCP server.",
+  "config.intervalSeconds": "How often to check the connection, in seconds."
+}

@@ -1,0 +1,62 @@
+{
+	"name": "unreal-mcp-status",
+	"displayName": "Unreal MCP Status",
+	"description": "%description%",
+	"version": "1.1.0",
+	"publisher": "montemr",
+	"license": "MIT",
+	"icon": "images/icon.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/CryptGodSon/unreal-mcp-status.git"
+	},
+	"bugs": {
+		"url": "https://github.com/CryptGodSon/unreal-mcp-status/issues"
+	},
+	"homepage": "https://github.com/CryptGodSon/unreal-mcp-status#readme",
+	"keywords": [
+		"unreal",
+		"unreal engine",
+		"mcp",
+		"model context protocol",
+		"status bar"
+	],
+	"engines": {
+		"vscode": "^1.80.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"extensionKind": [
+		"ui"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./extension.js",
+	"l10n": "./l10n",
+	"contributes": {
+		"commands": [
+			{
+				"command": "unrealMcpStatus.refresh",
+				"title": "%command.refresh%"
+			}
+		],
+		"configuration": {
+			"title": "Unreal MCP Status",
+			"properties": {
+				"unrealMcpStatus.url": {
+					"type": "string",
+					"default": "http://127.0.0.1:8000/mcp",
+					"description": "%config.url%"
+				},
+				"unrealMcpStatus.intervalSeconds": {
+					"type": "number",
+					"default": 3,
+					"minimum": 1,
+					"description": "%config.intervalSeconds%"
+				}
+			}
+		}
+	}
+}

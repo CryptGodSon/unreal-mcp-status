@@ -1,0 +1,6 @@
+{
+  "description": "Pokazuje na pasku stanu, czy serwer MCP edytora Unreal jest osiągalny.",
+  "command.refresh": "Unreal MCP: Sprawdź połączenie",
+  "config.url": "Adres serwera MCP edytora Unreal.",
+  "config.intervalSeconds": "Jak często sprawdzać połączenie (w sekundach)."
+}

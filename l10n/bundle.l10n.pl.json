@@ -1,0 +1,15 @@
+{
+  "Unreal MCP: connected": "Unreal MCP: połączono",
+  "The server responds at {0}. MCP clients can control the editor.": "Serwer odpowiada pod {0}. Klienci MCP (np. Claude Code) mogą sterować edytorem.",
+  "Port is used by another program": "Port zajęty przez inny program",
+  "Something that is not the Unreal MCP server responds at {0}. Close that program or change the port.": "Pod {0} odpowiada coś, co nie jest serwerem MCP Unreala. Zamknij ten program albo zmień port.",
+  "Unreal is running, but MCP does not respond": "Unreal działa, ale MCP nie odpowiada",
+  "The editor may still be starting. If this takes longer, run this in the Unreal console: {0}": "Edytor może się jeszcze uruchamiać. Jeśli to trwa dłużej, wpisz w konsoli Unreala: {0}",
+  "Unreal Editor is not running": "Unreal Editor wyłączony",
+  "Open your Unreal project. If the MCP server does not start by itself, run this in the Unreal console: {0}": "Otwórz projekt w Unrealu. Jeśli serwer MCP nie wystartuje sam, wpisz w konsoli Unreala: {0}",
+  "Click to check now.": "Kliknij, aby sprawdzić teraz.",
+  "Check failed": "Błąd sprawdzania",
+  "Could not check the server state.": "Nie udało się sprawdzić stanu serwera.",
+  "Copy command": "Kopiuj komendę",
+  "Copied: {0}": "Skopiowano: {0}"
+}
