@@ -3,24 +3,29 @@
 // (or another program holds the port). Red: Unreal Editor is not running.
 const vscode = require('vscode');
 const http = require('http');
+const https = require('https');
 const { execFile } = require('child_process');
 
 const GREEN = '#3fb950';
 const YELLOW = '#d29922';
 const RED = '#f85149';
 const START_COMMAND = 'ModelContextProtocol.StartServer';
+const TOOLTIP_COMMANDS = ['unrealMcpStatus.refresh', 'unrealMcpStatus.copyStartCommand', 'unrealMcpStatus.openSettings'];
 const t = vscode.l10n.t;
 
 let item;
 let timer;
 let checking = null;
 let last = null;
+let clicking = false;
 
 function config() {
   const cfg = vscode.workspace.getConfiguration('unrealMcpStatus');
   return {
     url: cfg.get('url', 'http://127.0.0.1:8000/mcp'),
     intervalMs: Math.max(1, cfg.get('intervalSeconds', 3)) * 1000,
+    pauseWhenUnfocused: cfg.get('pauseWhenUnfocused', true),
+    notifyOnChange: cfg.get('notifyOnChange', false),
   };
 }
 
@@ -30,7 +35,27 @@ function withTimeout(promise, ms, fallback) {
   return Promise.race([promise, new Promise((resolve) => setTimeout(() => resolve(fallback), ms))]);
 }
 
+// The body is plain JSON or, when the server picks the streaming transport,
+// server-sent events whose `data:` lines carry the JSON-RPC message.
+function parseJsonRpc(data) {
+  try {
+    return JSON.parse(data);
+  } catch {
+    for (const line of data.split(/\r?\n/)) {
+      if (!line.startsWith('data:')) continue;
+      try { return JSON.parse(line.slice(5)); } catch { /* try the next line */ }
+    }
+    return null;
+  }
+}
+
+function isJsonRpc(json) {
+  return Boolean(json) && json.jsonrpc === '2.0';
+}
+
 // MCP "ping" needs no session, so polling does not leave sessions open in the editor.
+// Any JSON-RPC reply counts as reachable: servers that insist on a session answer
+// the ping with a JSON-RPC error, which still proves an MCP server is listening.
 function pingMcp(url) {
   return new Promise((resolve) => {
     let settled = false;
@@ -38,7 +63,8 @@ function pingMcp(url) {
     const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' });
     let req;
     try {
-      req = http.request(url, {
+      const lib = url.startsWith('https:') ? https : http;
+      req = lib.request(url, {
         method: 'POST',
         agent: false, // fresh socket every time: a reused keep-alive socket can hang after Unreal exits
         timeout: 1500,
@@ -51,16 +77,13 @@ function pingMcp(url) {
       }, (res) => {
         let data = '';
         res.setEncoding('utf8');
-        res.on('data', (chunk) => { data += chunk; });
-        res.on('error', () => done('down'));
-        res.on('close', () => {
-          try {
-            const json = JSON.parse(data);
-            done(json && json.jsonrpc === '2.0' && 'result' in json ? 'ok' : 'foreign');
-          } catch {
-            done(data ? 'foreign' : 'down');
-          }
+        res.on('data', (chunk) => {
+          data += chunk;
+          // An SSE stream may stay open after the reply; stop as soon as it has arrived.
+          if (isJsonRpc(parseJsonRpc(data))) { done('ok'); req.destroy(); }
         });
+        res.on('error', () => done('down'));
+        res.on('close', () => done(isJsonRpc(parseJsonRpc(data)) ? 'ok' : data ? 'foreign' : 'down'));
       });
     } catch {
       done('down');
@@ -89,7 +112,7 @@ async function probe() {
   const { url } = config();
   const mcp = await withTimeout(pingMcp(url), 2500, 'down');
   if (mcp === 'ok') {
-    return { state: 'ok', color: GREEN, icon: '$(pass-filled)', title: t('Unreal MCP: connected'),
+    return { state: 'ok', color: GREEN, icon: '$(pass-filled)', title: t('Connected'),
       detail: t('The server responds at {0}. MCP clients can control the editor.', url) };
   }
   if (mcp === 'foreign') {
@@ -105,12 +128,29 @@ async function probe() {
     detail: t('Open your Unreal project. If the MCP server does not start by itself, run this in the Unreal console: {0}', START_COMMAND) };
 }
 
+function tooltip(s) {
+  const links = [`[$(refresh) ${t('Check now')}](command:unrealMcpStatus.refresh)`];
+  if (s.state !== 'ok') links.push(`[$(copy) ${t('Copy start command')}](command:unrealMcpStatus.copyStartCommand)`);
+  links.push(`[$(gear) ${t('Settings')}](command:unrealMcpStatus.openSettings)`);
+  const md = new vscode.MarkdownString(`**${s.title}**\n\n${s.detail}\n\n${links.join(' &nbsp;·&nbsp; ')}`, true);
+  md.isTrusted = { enabledCommands: TOOLTIP_COMMANDS };
+  return md;
+}
+
+// Tells the user when the state changes while they are not looking at the indicator.
+function notifyChange(prev, s) {
+  if (clicking || !prev || !prev.state || prev.state === s.state || !config().notifyOnChange) return;
+  const show = s.state === 'ok' ? vscode.window.showInformationMessage : vscode.window.showWarningMessage;
+  show(`Unreal MCP — ${s.title}`);
+}
+
 function render(s) {
+  const prev = last;
   last = s;
   item.text = `${s.icon} Unreal`;
   item.color = s.color;
-  const md = new vscode.MarkdownString(`**${s.title}**\n\n${s.detail}\n\n_${t('Click to check now.')}_`);
-  item.tooltip = md;
+  item.tooltip = tooltip(s);
+  notifyChange(prev, s);
 }
 
 // Several callers (timer, click, settings change) share one in-flight check.
@@ -124,9 +164,26 @@ function check() {
   return checking;
 }
 
+// Background polling skips checks while the window is in the background: every ping
+// writes a line to the Unreal Output Log, and nobody is looking at the indicator then.
+function tick() {
+  if (config().pauseWhenUnfocused && !vscode.window.state.focused) return;
+  check();
+}
+
+async function copyStartCommand() {
+  await vscode.env.clipboard.writeText(START_COMMAND);
+  vscode.window.showInformationMessage(t('Copied: {0}', START_COMMAND));
+}
+
 async function onClick() {
-  item.text = '$(sync~spin) Unreal';
-  await check();
+  clicking = true;
+  try {
+    item.text = '$(sync~spin) Unreal';
+    await check();
+  } finally {
+    clicking = false;
+  }
   const s = last;
   const show = s.state === 'ok' ? vscode.window.showInformationMessage
     : s.state === 'off' ? vscode.window.showErrorMessage
@@ -134,15 +191,12 @@ async function onClick() {
   const copy = t('Copy command');
   const actions = s.state === 'noserver' || s.state === 'off' ? [copy] : [];
   const choice = await show(`Unreal MCP — ${s.title}. ${s.detail}`, ...actions);
-  if (choice === copy) {
-    await vscode.env.clipboard.writeText(START_COMMAND);
-    vscode.window.showInformationMessage(t('Copied: {0}', START_COMMAND));
-  }
+  if (choice === copy) await copyStartCommand();
 }
 
 function restartTimer() {
   if (timer) clearInterval(timer);
-  timer = setInterval(check, config().intervalMs);
+  timer = setInterval(tick, config().intervalMs);
 }
 
 function activate(context) {
@@ -155,9 +209,13 @@ function activate(context) {
   context.subscriptions.push(
     item,
     vscode.commands.registerCommand('unrealMcpStatus.refresh', onClick),
+    vscode.commands.registerCommand('unrealMcpStatus.copyStartCommand', copyStartCommand),
+    vscode.commands.registerCommand('unrealMcpStatus.openSettings',
+      () => vscode.commands.executeCommand('workbench.action.openSettings', '@ext:montemr.unreal-mcp-status')),
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('unrealMcpStatus')) { restartTimer(); check(); }
     }),
+    vscode.window.onDidChangeWindowState((e) => { if (e.focused) check(); }),
     { dispose: () => clearInterval(timer) },
   );
 

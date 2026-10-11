@@ -53,15 +53,17 @@ Claude Code, Cursor, Copilot and other MCP clients control Unreal Engine through
 | 🟡 **Unreal** | Another program answers at the server's address. | Close that program, or change the port in Unreal and in the `unrealMcpStatus.url` setting. |
 | 🔴 **Unreal** | Unreal Editor is not running. | Open your project. |
 
-Hover over the light for details, or click it to check right away.
+Hover over the light for details and quick actions: **Check now**, **Copy start command** and **Settings**. Click the light to check right away.
 
 ## Using a different MCP server
 
-Set `unrealMcpStatus.url` to your server's address. Any server that implements the MCP Streamable HTTP transport and answers `ping` turns the light green. The "editor is running" check looks for the `UnrealEditor` process, and the **Copy command** button copies the command for Epic's plugin.
+Set `unrealMcpStatus.url` to your server's address (`http` or `https`). Any server that implements the MCP Streamable HTTP transport turns the light green, whether it replies with plain JSON or a server-sent event stream, and even if it requires a session before it answers `ping`. The "editor is running" check looks for the `UnrealEditor` process, and the **Copy command** button copies the command for Epic's plugin.
 
 ## How it works
 
 Every few seconds the extension sends an MCP `ping` (JSON-RPC over HTTP) to the configured address. A `ping` needs no session, so polling does not leave sessions open in the editor. If nothing answers, it checks whether an `UnrealEditor` process is running to tell "editor closed" apart from "server not started".
+
+While the editor window is in the background, checks pause, and the light updates the moment you switch back.
 
 ## Settings
 
@@ -69,10 +71,20 @@ Every few seconds the extension sends an MCP `ping` (JSON-RPC over HTTP) to the 
 | --- | --- | --- |
 | `unrealMcpStatus.url` | `http://127.0.0.1:8000/mcp` | Address of the Unreal Editor MCP server. |
 | `unrealMcpStatus.intervalSeconds` | `3` | How often to check the connection, in seconds. |
+| `unrealMcpStatus.pauseWhenUnfocused` | `true` | Pause checking while the window is in the background. |
+| `unrealMcpStatus.notifyOnChange` | `false` | Show a notification when the state changes, for example when the server comes up. |
 
 ## Commands
 
 - **Unreal MCP: Check connection** (`unrealMcpStatus.refresh`) checks now and shows the result.
+- **Unreal MCP: Copy start server command** (`unrealMcpStatus.copyStartCommand`) copies `ModelContextProtocol.StartServer` for the Unreal console.
+- **Unreal MCP: Open settings** (`unrealMcpStatus.openSettings`) opens this extension's settings.
+
+## Troubleshooting
+
+- **"Replying to Ping" fills the Unreal Output Log.** Epic's plugin logs every `ping`. Keep `unrealMcpStatus.pauseWhenUnfocused` on, raise `unrealMcpStatus.intervalSeconds`, or hide the messages by running `Log LogModelContextProtocol Warning` in the Unreal console.
+- **The light stays yellow with "Port is used by another program".** Another app answers on port 8000. Close it, or pick a free port in **Editor Preferences → Plugins → Model Context Protocol** and set the same address in `unrealMcpStatus.url` and in your AI client.
+- **The light stays yellow with "MCP does not respond".** Check that **Auto Start Server** is on in the plugin settings, or start the server from the Unreal console with `ModelContextProtocol.StartServer`.
 
 ## Privacy
 

@@ -2,10 +2,14 @@
 	"name": "unreal-mcp-status",
 	"displayName": "Unreal MCP Status",
 	"description": "%description%",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"publisher": "montemr",
 	"license": "MIT",
 	"icon": "images/icon.png",
+	"galleryBanner": {
+		"color": "#16191E",
+		"theme": "dark"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/CryptGodSon/unreal-mcp-status.git"
@@ -46,6 +50,7 @@
 		"vscode": "^1.80.0"
 	},
 	"categories": [
+		"AI",
 		"Other"
 	],
 	"extensionKind": [
@@ -61,6 +66,14 @@
 			{
 				"command": "unrealMcpStatus.refresh",
 				"title": "%command.refresh%"
+			},
+			{
+				"command": "unrealMcpStatus.copyStartCommand",
+				"title": "%command.copyStartCommand%"
+			},
+			{
+				"command": "unrealMcpStatus.openSettings",
+				"title": "%command.openSettings%"
 			}
 		],
 		"configuration": {
@@ -76,6 +89,16 @@
 					"default": 3,
 					"minimum": 1,
 					"description": "%config.intervalSeconds%"
+				},
+				"unrealMcpStatus.pauseWhenUnfocused": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.pauseWhenUnfocused%"
+				},
+				"unrealMcpStatus.notifyOnChange": {
+					"type": "boolean",
+					"default": false,
+					"description": "%config.notifyOnChange%"
 				}
 			}
 		}
