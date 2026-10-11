@@ -2,7 +2,7 @@
 	"name": "unreal-mcp-status",
 	"displayName": "Unreal MCP Status",
 	"description": "%description%",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"publisher": "montemr",
 	"license": "MIT",
 	"icon": "images/icon.png",
@@ -44,7 +44,11 @@
 		"graphic designer",
 		"3d",
 		"technical artist",
-		"blueprints"
+		"blueprints",
+		"ue4",
+		"unreal engine 4",
+		"unreal engine 5.5",
+		"unreal engine 5.8"
 	],
 	"engines": {
 		"vscode": "^1.80.0"
@@ -68,6 +72,10 @@
 				"title": "%command.refresh%"
 			},
 			{
+				"command": "unrealMcpStatus.chooseServer",
+				"title": "%command.chooseServer%"
+			},
+			{
 				"command": "unrealMcpStatus.copyStartCommand",
 				"title": "%command.copyStartCommand%"
 			},
@@ -84,11 +92,26 @@
 					"default": "http://127.0.0.1:8000/mcp",
 					"description": "%config.url%"
 				},
+				"unrealMcpStatus.startCommand": {
+					"type": "string",
+					"default": "ModelContextProtocol.StartServer",
+					"description": "%config.startCommand%"
+				},
 				"unrealMcpStatus.intervalSeconds": {
 					"type": "number",
 					"default": 3,
 					"minimum": 1,
 					"description": "%config.intervalSeconds%"
+				},
+				"unrealMcpStatus.verifyTools": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.verifyTools%"
+				},
+				"unrealMcpStatus.checkProject": {
+					"type": "boolean",
+					"default": true,
+					"description": "%config.checkProject%"
 				},
 				"unrealMcpStatus.pauseWhenUnfocused": {
 					"type": "boolean",

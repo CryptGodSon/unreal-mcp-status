@@ -1,10 +1,14 @@
 {
-  "description": "Status bar light for Unreal Engine MCP: see at a glance whether Claude Code, Cursor or Copilot can reach the Unreal Editor. Works with Epic's built-in Unreal MCP plugin (UE 5.8).",
+  "description": "Status bar light for Unreal Engine MCP: see at a glance whether Claude Code, Cursor or Copilot can reach the Unreal Editor and use its tools. Works with Epic's built-in Unreal MCP plugin (UE 5.8) and community plugins for older versions, including UE4.",
   "command.refresh": "Unreal MCP: Check connection",
   "command.copyStartCommand": "Unreal MCP: Copy start server command",
+  "command.chooseServer": "Unreal MCP: Choose MCP server",
   "command.openSettings": "Unreal MCP: Open settings",
-  "config.url": "Address of the Unreal Editor MCP server.",
+  "config.url": "Address of the Unreal Editor MCP server. Use http:// or https:// for MCP over HTTP (Epic's plugin and most others) and tcp://host:port for plugins that bridge to Unreal over a TCP socket. The \"Unreal MCP: Choose MCP server\" command fills this in for common plugins.",
+  "config.startCommand": "Unreal console command that starts the MCP server, offered by the Copy command button. Leave empty if your plugin has none.",
   "config.intervalSeconds": "How often to check the connection, in seconds.",
   "config.pauseWhenUnfocused": "Pause checking while this window is in the background. Each check writes a line to the Unreal Output Log, so this keeps the log quieter and saves CPU. The light updates as soon as you come back.",
-  "config.notifyOnChange": "Show a notification when the connection state changes, for example when the MCP server comes up."
+  "config.notifyOnChange": "Show a notification when the connection state changes, for example when the MCP server comes up.",
+  "config.verifyTools": "When the server comes up and when you click the light, connect the way an AI client does (initialize and list the tools, then end the session) and only show green if tools are available. HTTP servers only.",
+  "config.checkProject": "Show which project is open in Unreal and warn when it is not the project in this workspace."
 }
